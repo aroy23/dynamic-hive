@@ -31,7 +31,7 @@ Note: DataNodes are by default max 3 for a max of 3 replications but are configu
 `scripts/config.yaml`:
 | Parameter | Default | Description |
 |---|---|---|
-| `log_path` | `/opt/logs/access_log.jsonl` | Path to the access log written by the hook |
+| `log_path` | `./logs/access_log.jsonl` | Path to the access log written by the hook |
 | `time_window_minutes` | `60` | Only count accesses within this window |
 | `decay_factor` | `0.95` | Exponential decay per minute (0.95^10 min = 0.60) |
 | `thresholds.hot` | `50` | Heat score threshold for "hot" classification |
