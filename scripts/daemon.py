@@ -4,10 +4,6 @@ import sys
 import time
 import signal
 import logging
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
 import yaml
 
 from heat_tracker import get_heat_report
@@ -37,48 +33,38 @@ def main(config_path="config.yaml"):
         config = yaml.safe_load(f)
 
     interval = config.get("poll_interval_seconds", 30)
-
-    log.info("Dynamic Replication Daemon started (interval=%ds)", interval)
-    log.info("Config: %s", config_path)
+    log.info("Dynamic Replication Daemon started (interval=%ds, datanodes=%d, heat_per_replica=%d)",
+             interval, config.get("num_datanodes", 3), config.get("heat_per_replica", 10))
 
     cycle = 0
     while running:
         cycle += 1
         log.info("=" * 60)
-        log.info("Cycle %d — computing heat scores...", cycle)
+        log.info("Cycle %d", cycle)
 
         try:
             report = get_heat_report(config_path)
             if report:
-                log.info("Heat scores for %d tables:", len(report))
                 for entry in report:
-                    log.info(
-                        "  %-35s heat=%-8.2f class=%-5s desired_rep=%d",
-                        entry["table"], entry["heat"],
-                        entry["classification"], entry["desired_replication"],
-                    )
+                    log.info("  %-35s heat=%-8.2f desired_rep=%d",
+                             entry["table"], entry["heat"], entry["desired_replication"])
             else:
                 log.info("No table accesses found in log.")
 
-            log.info("Adjusting replication factors...")
             changes = adjust_replications(config_path)
-
             if changes:
-                log.info("Applied %d replication changes:", len(changes))
+                log.info("Applied %d change(s):", len(changes))
                 for c in changes:
-                    log.info(
-                        "  %s: %d -> %d",
-                        c["table"], c["old_replication"], c["new_replication"],
-                    )
+                    log.info("  %s: %d -> %d (heat=%.2f)",
+                             c["table"], c["old_replication"], c["new_replication"], c["heat"])
             else:
-                log.info("No replication changes needed this cycle.")
+                log.info("No replication changes needed.")
 
         except Exception as e:
             log.exception("Error during cycle %d: %s", cycle, e)
 
         if running:
-            log.info("Sleeping %d seconds until next cycle...", interval)
-            # sleep in 1-second ticks so we can respond to signals promptly
+            log.info("Sleeping %ds...", interval)
             for _ in range(interval):
                 if not running:
                     break
