@@ -9,6 +9,7 @@ Docker Hive Reference: https://github.com/big-data-europe/docker-hive
 Do Once
 
 ```bash
+# Set up Python env
 pip install -r requirements.txt
 cd hive/hook
 mvn clean package -DskipTests
