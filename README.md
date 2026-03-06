@@ -22,6 +22,7 @@ Then
 cd scripts
 python3 testbench.py
 
+cd ..
 # stop containers
 docker compose down
 # OR
