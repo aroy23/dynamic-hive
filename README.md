@@ -2,7 +2,7 @@
 
 By default, HDFS replicates every block 3 times regardless of how frequently the data is accessed. A table queried 1,000 times per second gets the same replication factor as one that hasn't been read in years. This project replaces that static policy with **dynamic, usage-based replication**, an external feedback system built on top of existing Hive/HDFS APIs.
 
-Reference: https://github.com/big-data-europe/docker-hive
+Docker Hive Reference: https://github.com/big-data-europe/docker-hive
 
 ## Quick Start
 
