@@ -74,7 +74,7 @@ def generate_compose(num_datanodes=3):
     volumes["hive_metastore_postgresql"] = None
 
     return yaml.dump(
-        {"version": "3", "services": services, "volumes": volumes},
+        {"services": services, "volumes": volumes},
         default_flow_style=False,
         sort_keys=False,
     )
