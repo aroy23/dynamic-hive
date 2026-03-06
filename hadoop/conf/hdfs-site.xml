@@ -16,6 +16,6 @@
     <property>
         <name>dfs.replication</name>
         <value>3</value>
-        <description>Default block replication factor. Our system dynamically adjusts this per-file.</description>
+        <description>Default block replication. The daemon dynamically adjusts this per-table based on heat.</description>
     </property>
 </configuration>

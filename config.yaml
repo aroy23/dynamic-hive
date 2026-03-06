@@ -1,0 +1,7 @@
+num_datanodes: 5
+log_path: logs/access_log.jsonl
+time_window_minutes: 60
+decay_factor: 0.95
+heat_per_replica: 10
+warehouse_path: /user/hive/warehouse
+poll_interval_seconds: 30
