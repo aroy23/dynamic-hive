@@ -116,7 +116,7 @@ def run_optimization(
     decay_types=None,
 ):
     base = load_config(config_path)
-    base["num_datanodes"] = num_datanodes
+    num_datanodes = base.get("num_datanodes", num_datanodes)
 
     if not skip_setup:
         log.info("Setting up cluster and creating tables ...")

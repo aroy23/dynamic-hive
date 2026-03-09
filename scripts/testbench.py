@@ -241,9 +241,7 @@ def benchmark_queries():
 
 def run_testbench(config_path="config.yaml"):
     config = load_config(config_path)
-    num_datanodes = 5
-
-    config["num_datanodes"] = num_datanodes
+    num_datanodes = config.get("num_datanodes", 5)
     with open(config_path, "w") as f:
         yaml.dump(config, f, default_flow_style=False, sort_keys=False)
 
