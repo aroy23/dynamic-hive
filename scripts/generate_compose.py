@@ -10,6 +10,7 @@ def generate_compose(num_datanodes=3):
 
     services["namenode"] = {
         "image": "bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8",
+        "platform": "linux/amd64",
         "container_name": "namenode",
         "restart": "always",
         "ports": ["9870:9870", "9000:9000"],
@@ -22,6 +23,7 @@ def generate_compose(num_datanodes=3):
         host_port = 9864 + (i - 1)
         services[f"datanode{i}"] = {
             "image": "bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8",
+            "platform": "linux/amd64",
             "container_name": f"datanode{i}",
             "restart": "always",
             "ports": [f"{host_port}:9864"],
@@ -32,6 +34,7 @@ def generate_compose(num_datanodes=3):
 
     services["hive-metastore-postgresql"] = {
         "image": "bde2020/hive-metastore-postgresql:2.3.0",
+        "platform": "linux/amd64",
         "container_name": "hive-metastore-postgresql",
         "restart": "always",
         "volumes": ["hive_metastore_postgresql:/var/lib/postgresql/data"],
@@ -39,6 +42,7 @@ def generate_compose(num_datanodes=3):
 
     services["hive-metastore"] = {
         "image": "bde2020/hive:2.3.2-postgresql-metastore",
+        "platform": "linux/amd64",
         "container_name": "hive-metastore",
         "restart": "always",
         "env_file": ["./hadoop-hive.env"],
@@ -51,6 +55,7 @@ def generate_compose(num_datanodes=3):
 
     services["hive-server"] = {
         "image": "bde2020/hive:2.3.2-postgresql-metastore",
+        "platform": "linux/amd64",
         "container_name": "hive-server",
         "restart": "always",
         "env_file": ["./hadoop-hive.env"],

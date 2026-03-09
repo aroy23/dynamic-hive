@@ -1,6 +1,7 @@
 services:
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
     container_name: namenode
     restart: always
     ports:
@@ -15,6 +16,7 @@ services:
     - ./hadoop-hive.env
   datanode1:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
     container_name: datanode1
     restart: always
     ports:
@@ -27,6 +29,7 @@ services:
     - ./hadoop-hive.env
   datanode2:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
     container_name: datanode2
     restart: always
     ports:
@@ -39,6 +42,7 @@ services:
     - ./hadoop-hive.env
   datanode3:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
     container_name: datanode3
     restart: always
     ports:
@@ -51,6 +55,7 @@ services:
     - ./hadoop-hive.env
   datanode4:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
     container_name: datanode4
     restart: always
     ports:
@@ -63,6 +68,7 @@ services:
     - ./hadoop-hive.env
   datanode5:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
     container_name: datanode5
     restart: always
     ports:
@@ -75,12 +81,14 @@ services:
     - ./hadoop-hive.env
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
+    platform: linux/amd64
     container_name: hive-metastore-postgresql
     restart: always
     volumes:
     - hive_metastore_postgresql:/var/lib/postgresql/data
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
+    platform: linux/amd64
     container_name: hive-metastore
     restart: always
     env_file:
@@ -92,6 +100,7 @@ services:
     - 9083:9083
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
+    platform: linux/amd64
     container_name: hive-server
     restart: always
     env_file:
