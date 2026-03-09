@@ -39,9 +39,10 @@ logging.basicConfig(
 log = logging.getLogger("optimization_testbench")
 
 # Search space: decay formula and config parameters
-DECAY_FACTORS = [0.90, 0.92, 0.95, 0.98, 0.99]
-TIME_WINDOW_MINUTES = [30, 60, 120]
-HEAT_PER_REPLICA = [5, 10, 15, 20]
+# Default grid: 3 × 2 × 3 × 2 = 36 trials ≈ 9 hours on emulated amd64
+DECAY_FACTORS = [0.90, 0.95, 0.99]
+TIME_WINDOW_MINUTES = [30, 60]
+HEAT_PER_REPLICA = [5, 10, 20]
 DECAY_TYPES = ["exponential", "linear"]
 
 # Objective: maximize this score. Higher = better.
