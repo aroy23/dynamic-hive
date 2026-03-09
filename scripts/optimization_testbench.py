@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-Optimization testbench: search over decay formula and config parameters
-to find settings that maximize storage savings while keeping query latency acceptable.
-"""
-
 import argparse
 import itertools
 import logging
