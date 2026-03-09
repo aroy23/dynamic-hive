@@ -29,9 +29,18 @@ def parse_access_log(log_path):
                 continue
 
 
+def _decay_weight(age_minutes, time_window, decay_factor, decay_type):
+    """Return weight for an access of given age. decay_type: 'exponential' (decay^age) or 'linear' (1 - age/window)."""
+    if decay_type == "linear":
+        return max(0.0, 1.0 - (age_minutes / time_window)) if time_window > 0 else 1.0
+    # exponential (default): decay_factor^age
+    return math.pow(decay_factor, age_minutes)
+
+
 def compute_heat_scores(log_path, config):
     time_window = config.get("time_window_minutes", 60)
     decay = config.get("decay_factor", 0.95)
+    decay_type = config.get("decay_type", "exponential")
     now = datetime.now(timezone.utc)
     scores = defaultdict(float)
 
@@ -41,8 +50,7 @@ def compute_heat_scores(log_path, config):
             continue
         if age < 0:
             age = 0
-        # exponential decay: recent queries weigh ~1.0, older ones fade toward 0
-        scores[table] += math.pow(decay, age)
+        scores[table] += _decay_weight(age, time_window, decay, decay_type)
 
     return dict(scores)
 

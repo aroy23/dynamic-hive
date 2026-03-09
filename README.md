@@ -23,6 +23,11 @@ Then
 cd scripts
 python3 testbench.py
 
+# Optional: run optimization testbench to search for best decay/config
+python3 optimization_testbench.py
+# Or reuse existing cluster (after testbench.py has run once):
+python3 optimization_testbench.py --skip-setup
+
 cd ..
 # stop containers
 docker compose down
@@ -39,7 +44,8 @@ docker compose down -v
 | `num_datanodes` | `5` | Number of HDFS datanodes to spin up (also the max replication factor) |
 | `log_path` | `logs/access_log.jsonl` | Path to the access log written by the hook |
 | `time_window_minutes` | `60` | Only count accesses within this window |
-| `decay_factor` | `0.95` | Exponential decay per minute (0.95^10 min ≈ 0.60) |
+| `decay_factor` | `0.95` | Exponential decay per minute (0.95^10 min ≈ 0.60); used when `decay_type` is `exponential` |
+| `decay_type` | `exponential` | `exponential` = weight = decay_factor^age_minutes; `linear` = weight = max(0, 1 - age/window) |
 | `heat_per_replica` | `10` | Heat score units per additional replica (`replication = ceil(heat / heat_per_replica)`, clamped to `[1, num_datanodes]`) |
 | `warehouse_path` | `/user/hive/warehouse` | HDFS path to the Hive warehouse directory |
 | `poll_interval_seconds` | `30` | Daemon cycle interval |
