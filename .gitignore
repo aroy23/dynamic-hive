@@ -7,3 +7,7 @@ logs/access_log.jsonl
 hive/hook/target/
 
 .DS_Store
+
+diagram.py
+architecture_diagram.png
+architecture_diagram.pdf
