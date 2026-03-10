@@ -226,43 +226,61 @@ def print_results(results, baseline_replicated, baseline_hot_lat):
     # Sort by score descending
     results = sorted(results, key=lambda r: r["score"], reverse=True)
 
+    W = 120
     print("\n")
-    print("=" * 100)
+    print("=" * W)
     print("  OPTIMIZATION TESTBENCH — Parameter search (decay × time_window × heat_per_replica × decay_type)")
-    print("=" * 100)
-    print(f"  Baseline: replicated={fmt_bytes(baseline_replicated)}, hot_avg_latency={baseline_hot_lat:.3f}s")
+    print("=" * W)
     print("  Score = storage_savings_pct - %.1f * max(0, hot_latency_increase)" % LATENCY_PENALTY_PER_SEC)
-    print("=" * 100)
+    print("=" * W)
 
+    # Baseline section
+    print("\n  BASELINE (static replication = 3)")
+    print("-" * W)
+    print(f"    Storage (replicated):  {fmt_bytes(baseline_replicated)}")
+    print(f"    Hot avg latency:       {baseline_hot_lat:.3f}s")
+
+    # Results table
+    print(f"\n  DYNAMIC RESULTS (ranked by score)")
+    print("-" * W)
     header = (
-        f"{'decay':>6} {'window':>6} {'hpr':>4} {'type':<11} {'score':>8} "
-        f"{'savings%':>8} {'hot_lat':>8} {'replicated':>12}"
+        f"{'#':>3}  {'decay':>6} {'window':>6} {'hpr':>4} {'type':<11} {'score':>7}"
+        f" | {'storage':>10} {'Δ storage':>10}"
+        f" | {'hot_lat':>8} {'Δ latency':>10}"
     )
-    print(f"\n{header}")
-    print("-" * 100)
+    print(f"  {header}")
+    print("  " + "-" * (W - 4))
 
-    for r in results:
+    for i, r in enumerate(results):
         rep_str = fmt_bytes(r["replicated_bytes"]) if r.get("replicated_bytes") else "N/A"
+        lat_delta = r["hot_avg_latency"] - baseline_hot_lat
+        lat_sign = "+" if lat_delta >= 0 else ""
+        sav_sign = "+" if r["savings_pct"] <= 0 else "-"
         print(
-            f"{r['decay_factor']:>6.2f} {r['time_window_minutes']:>6} {r['heat_per_replica']:>4} "
-            f"{r['decay_type']:<11} {r['score']:>8.2f} {r['savings_pct']:>7.1f}% "
-            f"{r['hot_avg_latency']:>7.3f}s {rep_str:>12}"
+            f"  {i + 1:>3}  {r['decay_factor']:>6.2f} {r['time_window_minutes']:>6} {r['heat_per_replica']:>4} "
+            f"{r['decay_type']:<11} {r['score']:>7.2f}"
+            f" | {rep_str:>10} {sav_sign}{abs(r['savings_pct']):>8.1f}%"
+            f" | {r['hot_avg_latency']:>7.3f}s {lat_sign}{lat_delta:>8.3f}s"
         )
 
+    # Best config
     best = results[0]
-    print("\n" + "=" * 100)
+    print("\n" + "=" * W)
     print("  BEST CONFIG (highest score)")
-    print("=" * 100)
-    print(
-        "  decay_factor: %.2f\n  time_window_minutes: %d\n  heat_per_replica: %d\n  decay_type: %s"
-        % (best["decay_factor"], best["time_window_minutes"], best["heat_per_replica"], best["decay_type"])
-    )
-    print("  → Suggested config.yaml snippet:")
-    print("    decay_factor: %.2f" % best["decay_factor"])
-    print("    time_window_minutes: %d" % best["time_window_minutes"])
-    print("    heat_per_replica: %d" % best["heat_per_replica"])
-    print("    decay_type: %s" % best["decay_type"])
-    print("=" * 100)
+    print("=" * W)
+    print(f"    decay_factor:        {best['decay_factor']:.2f}")
+    print(f"    time_window_minutes: {best['time_window_minutes']}")
+    print(f"    heat_per_replica:    {best['heat_per_replica']}")
+    print(f"    decay_type:          {best['decay_type']}")
+    print()
+    best_rep = fmt_bytes(best["replicated_bytes"]) if best.get("replicated_bytes") else "N/A"
+    best_lat_delta = best["hot_avg_latency"] - baseline_hot_lat
+    lat_sign = "+" if best_lat_delta >= 0 else ""
+    sav_sign = "+" if best["savings_pct"] <= 0 else "-"
+    print(f"    Storage:  {best_rep}  ({sav_sign}{abs(best['savings_pct']):.1f}% vs baseline)")
+    print(f"    Latency:  {best['hot_avg_latency']:.3f}s  ({lat_sign}{best_lat_delta:.3f}s vs baseline)")
+    print(f"    Score:    {best['score']:.2f}")
+    print("=" * W)
     print()
 
 
@@ -292,21 +310,21 @@ def main():
         type=float,
         nargs="+",
         default=None,
-        help="Decay factors to try (default: 0.90 0.92 0.95 0.98 0.99).",
+        help="Decay factors to try (default: 0.90 0.95 0.99).",
     )
     parser.add_argument(
         "--time-window",
         type=int,
         nargs="+",
         default=None,
-        help="Time window in minutes (default: 30 60 120).",
+        help="Time window in minutes (default: 30 120).",
     )
     parser.add_argument(
         "--heat-per-replica",
         type=int,
         nargs="+",
         default=None,
-        help="Heat per replica values (default: 5 10 15 20).",
+        help="Heat per replica values (default: 5 15).",
     )
     parser.add_argument(
         "--decay-type",
