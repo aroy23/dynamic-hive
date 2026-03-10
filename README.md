@@ -19,8 +19,8 @@ cd ../..
 Then
 
 ```bash
-# Run testbench (all services will boot up)
 cd scripts
+# Run testbench with values from config.yaml (all services will boot up)
 python3 testbench.py
 
 # Optional: run optimization testbench to search for best decay/config
