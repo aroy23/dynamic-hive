@@ -33,10 +33,10 @@ logging.basicConfig(
 log = logging.getLogger("optimization_testbench")
 
 # Search space: decay formula and config parameters
-# Default grid: 3 × 2 × 3 × 2 = 36 trials ≈ 9 hours on emulated amd64
+# Default grid: 3 × 2 × 2 × 2 = 24 trials ≈ 6 hours on emulated amd64
 DECAY_FACTORS = [0.90, 0.95, 0.99]
-TIME_WINDOW_MINUTES = [30, 60]
-HEAT_PER_REPLICA = [5, 10, 20]
+TIME_WINDOW_MINUTES = [30, 120]
+HEAT_PER_REPLICA = [5, 15]
 DECAY_TYPES = ["exponential", "linear"]
 
 # Objective: maximize this score. Higher = better.
@@ -76,7 +76,7 @@ def run_one_trial(trial_config_path, base_config, baseline_replicated, baseline_
         yaml.dump(config, f, default_flow_style=False, sort_keys=False)
 
     clear_access_log()
-    force_replication(1, config)
+    force_replication(3, config)
     time.sleep(2)
 
     generate_access_pattern()

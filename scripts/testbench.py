@@ -271,7 +271,7 @@ def run_testbench(config_path="config.yaml"):
     log.info("DYNAMIC — heat-driven replication (max datanodes=%d)", num_datanodes)
     log.info("=" * 70)
 
-    force_replication(1, config)
+    force_replication(STATIC_REP, config)
     clear_access_log()
     time.sleep(2)
 
