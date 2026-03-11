@@ -12,3 +12,7 @@ diagram.py
 architecture_diagram.png
 architecture_diagram.pdf
 recover_grid_results.py
+eval_charts.py
+results/latency_comparison.png
+results/ranked_scores.png
+results/storage_comparison.png

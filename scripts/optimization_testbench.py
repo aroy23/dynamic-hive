@@ -229,7 +229,7 @@ def print_results(results, baseline_replicated, baseline_hot_lat):
     W = 120
     print("\n")
     print("=" * W)
-    print("  OPTIMIZATION TESTBENCH — Parameter search (decay × time_window × heat_per_replica × decay_type)")
+    print("  OPTIMIZATION TESTBENCH — Parameter search (decay x time_window x heat_per_replica x decay_type)")
     print("=" * W)
     print("  Score = storage_savings_pct - %.1f * max(0, hot_latency_increase)" % LATENCY_PENALTY_PER_SEC)
     print("=" * W)
